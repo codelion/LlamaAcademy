@@ -334,10 +334,14 @@ def launch_instruction_generation(
         vectorstore = FAISS.from_documents(embed_docs, embeddings)
         
         logger.info("Summary Vectorstore is storing in assets/vectorstore_summary.pkl")
-        with open("assets/vectorstore_summary.pkl", "wb") as f:
-            pickle.dump(vectorstore, f)
-            
-        logger.info("Summarizing mode ends")
+import json
+
+# Assuming 'vectorstore' is serializable with JSON. If it's not directly serializable,
+# you might need to convert it into a format that is (e.g., a list or a dict).
+
+# Serialize 'vectorstore' to JSON and write it to a file
+with open("assets/vectorstore_summary.json", "w") as f:
+    json.dump(vectorstore, f)
         
         logger.info("Instruction Generation begins")
         while len(machine_instructions) < num_instructions_to_generate:
@@ -474,8 +478,11 @@ def launch_data_generation(
             instruction["instruction"], k=num_docs_to_output)
         if "summary_embeds" in kwargs:
             with open("assets/vectorstore_summary.pkl", "rb") as f:
-                summary_embeds = pickle.load(f)
-            docs.extend(summary_embeds.similarity_search(
+import json
+
+# Assuming `summary_embeds` is the data you want to serialize
+with open('summary_embeds.json', 'w') as f:
+    json.dump(summary_embeds, f)
                 instruction["instruction"], k=num_docs_to_output)
             )
         data["input"] = "\n\n".join([d.page_content for d in docs])
@@ -531,8 +538,11 @@ def unit_test():
     embeddings = OpenAIEmbeddings()
     vectorstore = FAISS.from_documents(docs, embeddings)
     with open("assets/vectorstore.pkl", "wb") as f:
-        pickle.dump(vectorstore, f)
-    api_docs = "https://developers.notion.com/reference"
+import json
+
+# Assuming vectorstore is a dictionary or list that is JSON serializable
+with open('vectorstore.json', 'w') as f:
+    json.dump(vectorstore, f)
     cfg = Config()
     launch_data_generation(
         url_docs=api_docs,

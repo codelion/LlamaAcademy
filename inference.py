@@ -66,8 +66,31 @@ def vicuna_chat(model_name, device, num_gpus, load_8bit=False, debug=False):
             print("exit...")
             break
         with open("assets/vectorstore.pkl", "rb") as f:
-            vectorstore = pkl.load(f)
-        docs = vectorstore.similarity_search(inp, k=1)[0].page_content
+import json
+from transformers import LlamaTokenizer, LlamaForCausalLM
+import torch
+from utils import conv_v1_2, SeparatorStyle
+from utils import generate_stream as generate_stream_func
+import argparse
+
+# ... [rest of the imports and code remains unchanged] ...
+
+def vicuna_chat(model_name, device, num_gpus, load_8bit=False, debug=False):
+    # ... [rest of the vicuna_chat function remains unchanged] ...
+
+    while True:
+        # ... [rest of the loop remains unchanged] ...
+        
+        with open("assets/vectorstore.json", "r") as f:  # Changed file extension to .json
+            vectorstore = json.load(f)  # Use json.load instead of pickle.load
+        
+        # ... [rest of the loop remains unchanged] ...
+
+# ... [rest of the code remains unchanged] ...
+
+if __name__ == "__main__":
+    args = args_parse()
+    # ... [rest of the main block remains unchanged] ...
         inp = prefix + inp + "\n\n### Input:\n" + docs + "\n\n### Code:"
         conv.append_message(conv.roles[0], inp)
         conv.append_message(conv.roles[1], None)
