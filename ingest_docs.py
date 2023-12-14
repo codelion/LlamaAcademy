@@ -302,8 +302,22 @@ def ingest_docs(url_docs: str, recursive_depth: int = 1, return_summary: bool = 
     logger.info("Saving vectorstore into assets/vectorstore.pkl")
     vectorstore = FAISS.from_documents(documents, embeddings)
     with open("assets/vectorstore.pkl", "wb") as f:
-        pickle.dump(vectorstore, f)
+import json
 
+# ... [rest of the ingest_docs function] ...
+
+logger.info("Saving vectorstore into assets/vectorstore.json")
+vectorstore = FAISS.from_documents(documents, embeddings)
+
+# Assuming that FAISS.from_documents returns an object that can be converted to a dictionary
+# or has a method to export its data in a serializable format.
+# If not, you will need to implement a method to extract the relevant data from the vectorstore object.
+vectorstore_data = vectorstore.to_dict()  # This is a hypothetical method to convert to a dictionary.
+
+with open("assets/vectorstore.json", "w") as f:
+    json.dump(vectorstore_data, f)
+
+return documents, docs_for_summary
     return documents, docs_for_summary
 
 if __name__ == "__main__":
